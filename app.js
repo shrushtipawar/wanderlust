@@ -64,6 +64,14 @@ const sessionOptions = {
     }
 };
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+>>>>>>> 50a0a5f35d6950afcf048e182647202231483e73
 app.use(session(sessionOptions));
 app.use(flash());
 
