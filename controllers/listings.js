@@ -10,7 +10,7 @@ module.exports.renderNewForm =  (req, res) => {
     res.render("listings/new.ejs");
 }
 
-module.exports.showListing = (async (req, res) => {
+module.exports.showListing = async (req, res) => {
     let { id } = req.params;
     const listing = await Listing.findById(id).populate({path:"reviews",
         populate:{path:"author",},
@@ -21,22 +21,20 @@ module.exports.showListing = (async (req, res) => {
     }
     res.render("listings/show.ejs", { listing });
     console.log(listing);
-})
+}
 
-module.exports.createListing = async (req, res) => {
+module.exports.createListing=async (req,res,next)=>{
+    let url = req.file.path;
+    let filename = req.file.filename;
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
-
-    if (req.file) {
-        let url = req.file.path;
-        let filename = req.file.filename;
-        newListing.image = { url, filename };
-    }
-
+    newListing.image = {url,filename};
     await newListing.save();
-    req.flash("success", "New listing created!");
+    req.flash("success","New Listing Created!");
     res.redirect("/listings");
+
 };
+
 
 
 module.exports.renderEditform = async (req, res) => {

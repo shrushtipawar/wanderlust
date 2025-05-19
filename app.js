@@ -38,7 +38,7 @@ app.set("views engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.engine('ejs', ejsMate);
+app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
 const store = MongoStore.create({
@@ -64,13 +64,6 @@ const sessionOptions = {
     }
 };
 
-
-// app.get("/", (req, res) => {
-//     res.send("hi, i am root");
-// });
-
-
-
 app.use(session(sessionOptions));
 app.use(flash());
 
@@ -81,37 +74,26 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use((req,res,next) => {
-    res.locals.currUser = req.user;
+app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
-    
+    res.locals.currUser=req.user;
     next();
 });
-
-
-// app.get("/demouser",async(req,res) => {
-//     let fakeUser = new User({
-//         email:"student@gmail.com",
-//         username:"sigmastudent"
-//     });
-//   let registerUser = await User.register(fakeUser,"helloworld");
-//   res.send(registerUser);
-// })
-
-
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewsRouter);
 app.use("/",userRouter);
 
-
+app.all("*",(req,res,next)=>{
+  next(new expresserror(404,"Page not Found!"));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
     let { statuscode = 500, message = "something went wrong!" } = err;
     res.render("error.ejs", { message });
-    // res.status(statuscode).send(message);
+    
 });
 
 app.listen(8080, () => {

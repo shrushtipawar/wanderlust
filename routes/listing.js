@@ -15,10 +15,6 @@ router.route("/")
  .post(isLoggedIn,upload.single('listing[image]') ,wrapasync(listingController.createListing));
 
 
-
-
-
-
 // New route
 router.get("/new",isLoggedIn, listingController.renderNewForm);
 
